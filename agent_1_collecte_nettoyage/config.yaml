@@ -1,0 +1,35 @@
+arxiv:
+  categories:
+    - "cs.AI"
+    - "cs.LG"
+    - "cs.CV"
+    - "cs.CL"
+    - "stat.ML"
+    - "cs.NE"
+    - "cs.RO"    
+    - "cs.IT"    
+    - "cs.SE"  
+  max_results_per_query: 500
+  total_max_results: 10000
+  start_date: "2023-01-01"
+  end_date: "2026-06-25"
+  rate_limit_seconds: 3
+  retry_attempts: 3
+  base_url: "http://export.arxiv.org/api/query"
+  user_agent: "ResearchTrendAnalyzer/1.0"
+
+storage:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  save_json: true
+
+cleaning:
+  remove_latex: true
+  remove_references: true
+  min_abstract_length: 50
+  spacy_model: "en_core_web_sm"
+
+logging:
+  level: "INFO"
+  log_file: "logs/agent1.log"
+  format: "%(asctime)s [%(levelname)s] %(name)s - %(message)s"

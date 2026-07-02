@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-06-16T01:17:22.078005",
+  "report_file": "rapport_20260616_011722.md",
+  "data_summary": {
+    "total_articles": 8590,
+    "emerging_topics_count": 15,
+    "avg_growth": 40.6,
+    "max_growth": 84.0
+  },
+  "insights_count": {
+    "key_findings": 3,
+    "recommendations": 1
+  },
+  "confidence": {
+    "overall_score": 0.88,
+    "confidence_level": "Élevé",
+    "interpretation": "Analyse robuste basée sur 8590 articles et 15 topics émergents. Les tendances sont fiables.",
+    "factors": {
+      "data_volume_score": 1.0,
+      "emerging_topics_score": 1.0,
+      "growth_score": 0.406
+    }
+  }
+}

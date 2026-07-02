@@ -1,0 +1,62 @@
+# Agent 4 - Configuration avancée
+llm:
+  # Stratégies disponibles: "local", "template", "hybrid", "simulation"
+  strategy: "hybrid"
+  
+  local:
+    engine: "ollama"
+    model: "mistral"
+    temperature: 0.3
+    max_tokens: 4096
+    timeout: 60
+    
+  fallback:
+    engine: "template"
+    confidence_threshold: 0.6
+    human_review_required: false
+
+report:
+  format: "markdown"
+  include_confidence_scores: true
+  include_methodology: true
+  include_limitations: true
+  max_sections: 7
+  
+  sections:
+    - executive_summary
+    - methodology
+    - topics_analysis
+    - temporal_trends
+    - predictions
+    - recommendations
+    - limitations
+
+confidence:
+  # Facteurs influençant le score de confiance
+  factors:
+    data_volume:
+      weight: 0.25
+      threshold_low: 50
+      threshold_high: 500
+    temporal_coverage:
+      weight: 0.20
+      # AVANT : months_required: 3
+      # APRÈS : CHANGER EN jours ou semaines
+      days_required: 14           # 14 jours = 2 semaines
+      # OU BIEN :
+      # periods_required: 4       # 4 périodes de 3-4 jours
+    model_perplexity:
+      weight: 0.20
+      good_threshold: 1000
+    prediction_mae:
+      weight: 0.15
+      good_threshold: 0.1
+    citation_count:
+      weight: 0.10
+    expert_validation:
+      weight: 0.10
+
+output:
+  reports_dir: "data/reports"
+  metrics_dir: "data/metrics"
+  cache_enabled: true

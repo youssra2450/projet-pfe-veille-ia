@@ -1,0 +1,21 @@
+# config.yaml pour Agent 2 - Topic Modeling
+
+bertopic:
+  min_topic_size: 10
+  n_neighbors: 15
+  n_components: 5
+  calculate_probabilities: True
+  language: "english"
+
+lda:
+  n_components: 10
+  learning_decay: 0.7
+  learning_offset: 50
+  max_iter: 100
+
+storage:
+  processed_dir: "../data/processed"
+
+logging:
+  level: "INFO"
+  log_file: "logs/agent2.log"

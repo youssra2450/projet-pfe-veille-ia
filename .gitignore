@@ -1,0 +1,10 @@
+data/models/ 
+*.pkl 
+*.parquet 
+*.pyc 
+__pycache__/ 
+venv/ 
+data/processed/ 
+data/export/ 
+logs/ 
+*.log 

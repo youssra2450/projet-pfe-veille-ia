@@ -1,0 +1,10 @@
+﻿indicateur,valeur,unite,categorie
+Articles analysés,14334.0,articles,Corpus
+Topics BERTopic,1105.0,topics,Modélisation
+Topics émergents,15.0,topics,Tendances
+Score de confiance,76.5,/100,Qualité
+Croissance max,94.0,%,Tendances
+Périodes analysées,9.0,mois,Temporel
+Catégories arXiv,118.0,catégories,Corpus
+Outliers BERTopic,31.5,%,Modélisation
+Durée collecte,249.0,jours,Corpus

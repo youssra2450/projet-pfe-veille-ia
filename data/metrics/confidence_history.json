@@ -1,0 +1,224 @@
+[
+  {
+    "timestamp": "2026-05-19T18:05:31.529356",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.48169700377573,
+        "temporal_coverage_score": 0.08333333333333333,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.0,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 81,
+        "timeseries_length": 1,
+        "model_perplexity": 1257.63,
+        "forecast_mae": null,
+        "computation_date": "2026-05-19T18:01:22.105744"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-19T18:49:19.844866",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.6572082420485108,
+        "temporal_coverage_score": 0.08333333333333333,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.0,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 611,
+        "timeseries_length": 1,
+        "model_perplexity": 1257.63,
+        "forecast_mae": null,
+        "computation_date": "2026-05-19T18:45:35.851964"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-19T19:17:19.748134",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.6572082420485108,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.0,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 611,
+        "timeseries_length": 22,
+        "model_perplexity": 1257.63,
+        "forecast_mae": null,
+        "computation_date": "2026-05-19T19:17:19.729019"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-19T19:19:56.214702",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.6572082420485108,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.0,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 611,
+        "timeseries_length": 22,
+        "model_perplexity": 1257.63,
+        "forecast_mae": null,
+        "computation_date": "2026-05-19T19:19:56.204703"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-19T19:32:39.717953",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.6572082420485108,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.0,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 611,
+        "timeseries_length": 22,
+        "model_perplexity": 1257.63,
+        "forecast_mae": null,
+        "computation_date": "2026-05-19T19:29:35.806412"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-19T19:37:33.935575",
+    "scores": {
+      "overall_score": 0.0,
+      "confidence_level": "Insuffisant",
+      "interpretation": "Donn\u00e9es insuffisantes pour des conclusions fiables",
+      "factors": {
+        "data_volume_score": 0.6572082420485108,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.4,
+        "prediction_accuracy_score": 0.25,
+        "cross_validation_score": 0.3,
+        "external_validation_score": 0.5
+      },
+      "details": {
+        "n_articles": 611,
+        "timeseries_length": 22,
+        "model_perplexity": 1257.63,
+        "forecast_mae": 0.23292727272727273,
+        "computation_date": "2026-05-19T19:36:00.620095"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-24T00:22:49.525501",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-05-31T15:13:27.964170",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-03T01:36:35.327471",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-03T15:29:39.802230",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-11T01:27:59.130112",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-14T17:53:39.635752",
+    "scores": {
+      "overall_score": 0.765,
+      "confidence_level": "Moyen",
+      "interpretation": "R\u00e9sultats indicatifs, \u00e0 confirmer avec plus de donn\u00e9es",
+      "factors": {
+        "data_volume_score": 1.0,
+        "temporal_coverage_score": 1.0,
+        "model_perplexity_score": 0.7,
+        "prediction_accuracy_score": 0.5
+      }
+    }
+  }
+]

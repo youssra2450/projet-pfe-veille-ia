@@ -1,0 +1,26 @@
+# config.yaml pour Agent 3 - Analyse temporelle
+
+temporal:
+  min_periods: 3
+  change_point_prior: 0.05
+  seasonality_mode: "multiplicative"
+
+prophet:
+  changepoint_prior_scale: 0.05
+  seasonality_prior_scale: 10.0
+  holidays_prior_scale: 10.0
+  yearly_seasonality: True
+  weekly_seasonality: True
+  daily_seasonality: False
+
+trend_detection:
+  pelt_penalty: 10
+  min_segment_length: 2
+
+storage:
+  processed_dir: "../data/processed"
+  forecasts_dir: "../data/processed/forecasts"
+
+logging:
+  level: "INFO"
+  log_file: "logs/agent3.log"
