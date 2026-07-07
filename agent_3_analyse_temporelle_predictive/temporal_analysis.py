@@ -1,11 +1,3 @@
-"""
-Agent 3 - Module d'Analyse Temporelle
-Laboratoire de Recherche en IA - Projet Veille Technologique
-
-Fonctionnalités : Série temporelle, Lissage, Détection de ruptures (PELT/Binseg),
-Décomposition STL, Tests de stationnarité, Statistiques descriptives
-"""
-
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -215,9 +207,9 @@ if __name__ == "__main__":
 
     try:
         df = pd.read_parquet("data/processed/articles_with_topics.parquet")
-        print(f"✅ Articles chargés : {len(df)}")
+        print(f" Articles chargés : {len(df)}")
     except FileNotFoundError:
-        print("⚠️  Génération de données synthétiques...")
+        print("  Génération de données synthétiques...")
         n_articles, n_topics = 5000, 20
         df = pd.DataFrame({
             "published_date": pd.date_range("2023-01-01", periods=n_articles),
@@ -231,20 +223,20 @@ if __name__ == "__main__":
 
     # Statistiques avancées
     stats = analyzer.compute_stats_advanced(ts_smooth)
-    print("\n📊 Statistiques par topic :")
+    print("\n Statistiques par topic :")
     print(stats[["topic_id", "mean", "slope", "r2", "is_stationary", "volatility"]].head(10).to_string())
 
     # Détection de ruptures
     breakpoints = analyzer.detect_all_breakpoints(ts_smooth, method="pelt")
     if breakpoints:
-        print(f"\n🔴 Ruptures détectées : {len(breakpoints)} topics")
+        print(f"\n Ruptures détectées : {len(breakpoints)} topics")
 
     # Décomposition STL (exemple)
     if len(ts.columns) > 0:
         sample_topic = ts.columns[0]
         stl_result = analyzer.decompose_stl(ts[sample_topic], period=12)
         if stl_result:
-            print(f"\n📈 Décomposition STL - Topic {sample_topic}:")
+            print(f"\n Décomposition STL - Topic {sample_topic}:")
             print(f"  Trend variance: {stl_result['trend'].var():.6f}")
             print(f"  Seasonal variance: {stl_result['seasonal'].var():.6f}")
 
@@ -257,4 +249,4 @@ if __name__ == "__main__":
     analyzer.save(ts_smooth)
     stats.to_parquet("data/processed/topic_stats_advanced.parquet", index=False)
 
-    print("\n✅ Analyse temporelle terminée.")
+    print("\n Analyse temporelle terminée.")

@@ -209,13 +209,13 @@ class ArxivCollector:
         if filepath.exists():
             try:
                 df_existing = pd.read_parquet(filepath)
-                logger.info(f"📂 Historique chargé : {len(df_existing)} articles existants")
+                logger.info(f" Historique chargé : {len(df_existing)} articles existants")
                 return df_existing
             except Exception as e:
                 logger.warning(f"Erreur chargement historique: {e}")
                 return pd.DataFrame()
         else:
-            logger.info("📂 Aucun historique existant, création d'un nouveau fichier")
+            logger.info(" Aucun historique existant, création d'un nouveau fichier")
             return pd.DataFrame()
 
     def save_to_parquet(self, articles: List[Dict],
@@ -241,15 +241,15 @@ class ArxivCollector:
             # Sauvegarder une copie de backup avant l'écrasement
             backup_path = self.backup_dir / f"articles_raw_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.parquet"
             df_existing.to_parquet(backup_path, index=False)
-            logger.info(f"💾 Backup sauvegardé : {backup_path}")
+            logger.info(f" Backup sauvegardé : {backup_path}")
             
-            logger.info(f"📊 Fusion : {len(df_existing)} anciens + {len(df_new)} nouveaux = {len(df_combined)} total")
+            logger.info(f" Fusion : {len(df_existing)} anciens + {len(df_new)} nouveaux = {len(df_combined)} total")
         else:
             df_combined = df_new
         
         # Sauvegarder le fichier complet
         df_combined.to_parquet(output_path, index=False, engine="pyarrow")
-        logger.info(f"💾 Sauvegardé : {output_path} ({len(df_combined)} articles)")
+        logger.info(f" Sauvegardé : {output_path} ({len(df_combined)} articles)")
         
         return output_path
 
@@ -260,4 +260,4 @@ if __name__ == "__main__":
     collector = ArxivCollector(config)
     articles  = collector.fetch_all()
     path      = collector.save_to_parquet(articles)
-    print(f"\n✅ Collecte terminée : {len(articles)} nouveaux articles → {path}")
+    print(f"\n Collecte terminée : {len(articles)} nouveaux articles → {path}")

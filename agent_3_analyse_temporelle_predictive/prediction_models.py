@@ -1,10 +1,3 @@
-"""
-Agent 3 - Module de Prédiction Temporelle
-Laboratoire de Recherche en IA - Projet Veille Technologique
-
-Modèles : Prophet, ARIMA/SARIMA, LSTM (optionnel), Ensemble Learning
-"""
-
 import logging
 import warnings
 from pathlib import Path
@@ -84,11 +77,6 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:
 
 
 class TrendPredictor:
-    """
-    Système de prédiction multi-modèles pour séries temporelles.
-    Modèles disponibles : Prophet, ARIMA, LSTM (si TensorFlow installé)
-    """
-    
     def __init__(self, horizon_months: int = 12, test_ratio: float = 0.15,
                  use_deep_learning: bool = True, use_ensemble: bool = True):
         self.horizon = horizon_months
@@ -437,9 +425,9 @@ if __name__ == "__main__":
 
     try:
         ts = pd.read_parquet("data/processed/topic_timeseries.parquet")
-        print(f"✅ Chargé : {len(ts)} périodes × {len(ts.columns)} topics")
+        print(f" Chargé : {len(ts)} périodes × {len(ts.columns)} topics")
     except FileNotFoundError:
-        print("⚠️  Génération de données synthétiques...")
+        print("  Génération de données synthétiques...")
         dates = pd.date_range(start="2022-01-01", periods=24, freq="MS")
         n_topics = 20
         np.random.seed(SEED)
@@ -458,14 +446,14 @@ if __name__ == "__main__":
         methods.append('lstm')
 
     if not methods:
-        print("⚠️  Aucun modèle disponible. Installez prophet, pmdarima ou tensorflow.")
+        print("  Aucun modèle disponible. Installez prophet, pmdarima ou tensorflow.")
     else:
-        print(f"\n📊 Méthodes disponibles : {', '.join(methods)}")
+        print(f"\n Méthodes disponibles : {', '.join(methods)}")
         forecasts = predictor.predict_all(ts, methods=methods)
 
         if forecasts:
             metrics = predictor.summary(forecasts)
-            print("\n📊 Métriques par méthode:")
+            print("\n Métriques par méthode:")
             print(metrics.groupby('method').agg({
                 'mae': ['mean', 'std'], 'rmse': ['mean', 'std'], 'r2': ['mean', 'std']
             }).round(4))
@@ -479,6 +467,6 @@ if __name__ == "__main__":
                             print(f"  {method.upper()}: MAE={bt['mae'].mean():.4f} (±{bt['mae'].std():.4f})")
 
             output = predictor.save_forecasts(forecasts)
-            print(f"\n✅ Sauvegardé : {output}")
+            print(f"\n Sauvegardé : {output}")
         else:
-            print("⚠️  Aucune prédiction générée.")
+            print("  Aucune prédiction générée.")

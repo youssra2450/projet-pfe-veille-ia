@@ -66,13 +66,13 @@ class TextCleaner:
         if filepath.exists():
             try:
                 df_existing = pd.read_parquet(filepath)
-                logger.info(f"📂 Données nettoyées existantes : {len(df_existing)} articles")
+                logger.info(f" Données nettoyées existantes : {len(df_existing)} articles")
                 return df_existing
             except Exception as e:
                 logger.warning(f"Erreur chargement données nettoyées: {e}")
                 return pd.DataFrame()
         else:
-            logger.info("📂 Aucune donnée nettoyée existante")
+            logger.info(" Aucune donnée nettoyée existante")
             return pd.DataFrame()
 
     def clean_dataframe(self, df: pd.DataFrame, existing_df: pd.DataFrame = None) -> pd.DataFrame:
@@ -106,7 +106,7 @@ class TextCleaner:
             # Fusionner et supprimer les doublons
             df_combined = pd.concat([existing_df, df], ignore_index=True)
             df_combined = df_combined.drop_duplicates(subset=["id"], keep="last")
-            logger.info(f"📊 Fusion : {len(existing_df)} anciens + {len(df)} nouveaux = {len(df_combined)} total")
+            logger.info(f" Fusion : {len(existing_df)} anciens + {len(df)} nouveaux = {len(df_combined)} total")
         else:
             df_combined = df
         
@@ -123,7 +123,7 @@ class TextCleaner:
             backup_path = self.backup_dir / f"articles_clean_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.parquet"
             df_existing = pd.read_parquet(output_path)
             df_existing.to_parquet(backup_path, index=False)
-            logger.info(f"💾 Backup sauvegardé : {backup_path}")
+            logger.info(f" Backup sauvegardé : {backup_path}")
         
         df.to_parquet(output_path, index=False, engine="pyarrow")
         logger.info("Sauvegardé : %s (%d articles)", output_path, len(df))
@@ -145,13 +145,13 @@ if __name__ == "__main__":
 
     raw_path = Path(config["storage"]["processed_dir"]) / "articles_raw.parquet"
     if not raw_path.exists():
-        print(f"❌ Fichier introuvable : {raw_path}")
+        print(f" Fichier introuvable : {raw_path}")
         print("   Lancez d'abord : python arxiv_fetcher.py")
         exit(1)
 
     # Charger les données brutes
     df_raw = pd.read_parquet(raw_path)
-    print(f"📚 Chargé : {len(df_raw)} articles bruts")
+    print(f" Chargé : {len(df_raw)} articles bruts")
     
     # Charger les données nettoyées existantes
     cleaner = TextCleaner(config)
@@ -163,4 +163,4 @@ if __name__ == "__main__":
     
     # Sauvegarder
     out = cleaner.save_processed(df_clean)
-    print(f"\n✅ Nettoyage terminé : {len(df_clean)} articles → {out}")
+    print(f"\n Nettoyage terminé : {len(df_clean)} articles → {out}")

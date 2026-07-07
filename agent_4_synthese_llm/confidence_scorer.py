@@ -1,9 +1,3 @@
-"""
-Module de scoring de confiance - Niveau Master Recherche
-Evaluation objective de la fiabilite des analyses
-Base sur des metriques quantitatives et des facteurs ponderes
-"""
-
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -32,18 +26,6 @@ class ConfidenceFactors:
 
 
 class ConfidenceScorer:
-    """
-    Calcule un score de confiance objectif pour chaque analyse.
-    Approche : ponderation de 5 facteurs bases sur des metriques quantitatives.
-    
-    Facteurs :
-    1. Volume de donnees (25%) - Nombre d'articles
-    2. Couverture temporelle (20%) - Nombre de periodes
-    3. Diversite des topics (20%) - Nombre de topics emergents
-    4. Qualite des croissances (20%) - Ecart-type des croissances
-    5. Coherence globale (15%) - Verification croisee des metriques
-    """
-    
     def __init__(self):
         self.weights = {
             "data_volume_score": 0.25,
@@ -54,16 +36,6 @@ class ConfidenceScorer:
         }
     
     def compute(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Calcule le score de confiance global et par facteur.
-        
-        Args:
-            data: Dictionnaire contenant les metriques d'analyse
-            
-        Returns:
-            Dictionnaire avec score global, niveau, interpretation et facteurs
-        """
-        
         factors = ConfidenceFactors()
         
         # 1. Volume de donnees (0-1)
@@ -157,15 +129,6 @@ class ConfidenceScorer:
         }
     
     def compute_batch(self, data_list: List[Dict[str, Any]]) -> pd.DataFrame:
-        """
-        Calcule les scores de confiance pour plusieurs analyses.
-        
-        Args:
-            data_list: Liste de dictionnaires contenant les metriques
-            
-        Returns:
-            DataFrame avec les scores pour chaque analyse
-        """
         results = []
         for i, data in enumerate(data_list):
             score = self.compute(data)
@@ -186,10 +149,6 @@ class ConfidenceScorer:
 
 
 class ConfidenceTracker:
-    """
-    Suit l'evolution des scores de confiance dans le temps.
-    Permet de mesurer l'amelioration du systeme.
-    """
     
     def __init__(self, metrics_dir: Path):
         self.metrics_dir = Path(metrics_dir)
@@ -197,13 +156,6 @@ class ConfidenceTracker:
         self.history_file = self.metrics_dir / "confidence_history.json"
     
     def log(self, scores: Dict[str, Any], metadata: Optional[Dict] = None):
-        """
-        Enregistre un score dans l'historique.
-        
-        Args:
-            scores: Dictionnaire des scores de confiance
-            metadata: Metadonnees supplementaires (optionnel)
-        """
         history = self.load_history()
         
         entry = {
@@ -225,12 +177,6 @@ class ConfidenceTracker:
         return []
     
     def get_trend(self) -> str:
-        """
-        Analyse la tendance des scores de confiance.
-        
-        Returns:
-            'amelioration', 'degradation' ou 'stable'
-        """
         history = self.load_history()
         if len(history) < 2:
             return "stable"
@@ -251,12 +197,6 @@ class ConfidenceTracker:
             return "stable"
     
     def get_summary(self) -> Dict[str, Any]:
-        """
-        Retourne un resume de l'historique des scores.
-        
-        Returns:
-            Dictionnaire avec statistiques sur l'historique
-        """
         history = self.load_history()
         
         if not history:
@@ -282,15 +222,6 @@ class ConfidenceTracker:
         }
     
     def export_history(self, format: str = 'csv') -> str:
-        """
-        Exporte l'historique dans differents formats.
-        
-        Args:
-            format: 'csv' ou 'json'
-            
-        Returns:
-            Chemin du fichier exporte
-        """
         history = self.load_history()
         
         if not history:
@@ -318,12 +249,6 @@ class ConfidenceTracker:
             return str(export_path)
     
     def plot_trend(self, save_path: Optional[Path] = None):
-        """
-        Genere un graphique de l'evolution des scores de confiance.
-        
-        Args:
-            save_path: Chemin pour sauvegarder le graphique (optionnel)
-        """
         try:
             import matplotlib.pyplot as plt
             

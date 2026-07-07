@@ -30,14 +30,6 @@ class BERTopicModel:
                  use_llm_for_labels: bool = False,
                  llm_model: str = "llama2-7b-chat",
                  use_keybert: bool = True):
-        """
-        Initialise le modèle BERTopic avec options de génération de noms.
-        
-        Args:
-            use_llm_for_labels: Utiliser un LLM pour générer des noms de topics
-            llm_model: Nom du modèle LLM à utiliser (ex: "llama2-7b-chat", "mistral-7b")
-            use_keybert: Utiliser KeyBERTInspired pour améliorer les représentations
-        """
         logger.info("Chargement embeddings : all-MiniLM-L6-v2")
         self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -85,21 +77,7 @@ class BERTopicModel:
             logger.info(f"Chargement du LLM pour la génération de noms : {llm_model}")
             try:
                 # Prompt personnalisé pour générer des noms de topics en français
-                prompt = """
-Je vais vous donner une liste de mots-clés qui représentent un sujet de recherche en Intelligence Artificielle.
-
-Mots-clés : {keywords}
-
-Proposez un nom court et précis en français (2-6 mots) pour ce topic. 
-Le nom doit être compréhensible par des chercheurs et refléter le contenu du sujet.
-
-Règles :
-- Utilisez des termes techniques appropriés
-- Évitez les noms trop génériques
-- Restez concis
-
-Nom du topic :
-"""
+                prompt = """ Mots-clés : {keywords}"""
                 self.llm_representation = Llama2(
                     model=llm_model,
                     prompt=prompt,
@@ -340,8 +318,8 @@ if __name__ == "__main__":
 
     # Modèle avec génération automatique de noms
     model = BERTopicModel(
-        use_llm_for_labels=False,  # Mettre True si vous voulez utiliser un LLM local
-        use_keybert=True,          # Utilise KeyBERTInspired pour les mots-clés
+        use_llm_for_labels=False,  
+        use_keybert=True,          
     )
     
     topics, probs = model.fit(texts)
@@ -351,12 +329,8 @@ if __name__ == "__main__":
         "data/processed/articles_with_topics.parquet",
         index=False)
 
-    print("\n📊 Topics trouvés avec noms générés :")
+    print("\n Topics trouvés avec noms générés :")
     topic_info = model.get_topic_info()
     print(topic_info[["Topic", "topic_label", "Count", "top_words"]].to_string())
-    
-    # Exemple : Personnaliser un label manuellement
-    # model.set_custom_label(0, "Apprentissage profond et vision")
-    
     model.save()
-    print("✅ BERTopic terminé.")
+    print(" BERTopic terminé.")

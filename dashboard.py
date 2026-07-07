@@ -1,14 +1,3 @@
-"""
-dashboard.py - Tableau de bord de veille technologique IA
-Pipeline multi-agents - Analyse des tendances de recherche
-Niveau Master Recherche
-
-Structure :
-  1. Visualisation
-  2. Interpretation automatique
-  3. Aide a la decision
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -270,7 +259,7 @@ table.detail-table tbody tr:hover { background-color: #15203299; }
 # ==============================================================================
 # 2. CHEMINS & CONSTANTES
 # ==============================================================================
-DATA_DIR = Path("data/powerbi")
+DATA_DIR = Path("data/expor")
 REPORTS_DIR = Path("data/reports")
 
 COULEUR_PRIO = {
@@ -396,7 +385,7 @@ def load_all_data():
         df_kpis = pd.read_csv(DATA_DIR / "kpis.csv")
         df_topic_dist = pd.read_csv(DATA_DIR / "topic_distribution.csv")
     except FileNotFoundError as e:
-        st.error(f"Fichier introuvable : {e.filename}\n\nLancez `python export_for_powerbi.py`.")
+        st.error(f"Fichier introuvable : {e.filename}\n\nLancez `python export.py`.")
         return None
 
     try:

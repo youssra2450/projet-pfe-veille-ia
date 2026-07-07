@@ -1,10 +1,3 @@
-"""
-AGENT 4 - SYNTHÈSE ET INTERPRÉTATION (Niveau Master Recherche)
-Génère un rapport académique structuré en langage naturel
-Basé sur les données réelles du pipeline de veille
-Utilise Ollama (LLM local) pour l'interprétation qualitative avancée
-"""
-
 import sys
 import logging
 from pathlib import Path
@@ -33,7 +26,7 @@ import numpy as np
 class Config:
     def __init__(self):
         self.root_dir = Path(__file__).parent.parent
-        self.data_dir = self.root_dir / "data" / "powerbi"
+        self.data_dir = self.root_dir / "data" / "expor"
         self.reports_dir = self.root_dir / "data" / "reports"
         self.reports_dir.mkdir(parents=True, exist_ok=True)
         self.llm_model = "llama3.2"
@@ -857,7 +850,7 @@ def main():
     print("  5. Production du rapport final structure")
     print("\n" + "=" * 70 + "\n")
     
-    logger.info("Chargement des donnees depuis data/powerbi/...")
+    logger.info("Chargement des donnees depuis data/expor/...")
     data = load_real_data()
     
     validation = validate_data(data)

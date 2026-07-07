@@ -1,11 +1,3 @@
-"""
-Agent 3 - Module de Détection de Tendances
-Laboratoire de Recherche en IA - Projet Veille Technologique
-
-Fonctionnalités : Scores d'émergence, Classification des tendances,
-Analyse de momentum, Volatilité, Matrices de corrélation temporelle
-"""
-
 import logging
 from typing import Dict, List, Optional, Tuple
 
@@ -35,7 +27,7 @@ def compute_momentum(series: pd.Series, n: int = 3) -> float:
 
 
 def compute_volatility(series: pd.Series, n: int = 3) -> float:
-    """Volatilité : écart-type des n dernières périodes / moyenne."""
+    """Volatilité"""
     recent = series.dropna().iloc[-n:] if len(series.dropna()) >= n else series.dropna()
     if len(recent) < 2 or recent.mean() == 0:
         return np.nan
@@ -65,8 +57,6 @@ def compute_emergence_score(series: pd.Series, n: int = 3, alpha: float = 0.5) -
     """
     Score d'émergence pondéré.
     
-    Score = croissance * (1 - maturité)^alpha * volume_relative
-    - alpha : facteur de pondération pour la maturité
     """
     growth = compute_growth_rate(series, n)
     if np.isnan(growth) or growth <= 0:
@@ -114,14 +104,6 @@ def detect_emerging_topics_advanced(
     top_n: int = 10,
     threshold_std: float = 1.5
 ) -> pd.DataFrame:
-    """
-    Détection avancée des topics émergents.
-    
-    Utilise un score combiné :
-    - Émergence de base
-    - Score pondéré (volatilité + momentum)
-    - Seuil dynamique basé sur l'écart-type
-    """
     scores_base = {}
     scores_weighted = {}
     growths = {}
@@ -202,7 +184,7 @@ def generate_trend_report(emerging_df: pd.DataFrame, growth_df: pd.DataFrame, to
     lines = ["RAPPORT DE TENDANCES - IA RESEARCH", "=" * 40, ""]
 
     # Topics émergents
-    lines.append("🔺 TOPICS ÉMERGENTS")
+    lines.append(" TOPICS ÉMERGENTS")
     for _, row in emerging_df.head(top_n).iterrows():
         lines.append(f"  • {row['topic_label']}: +{row['growth_rate']*100:.1f}% "
                      f"(score={row['emergence_score']:.3f})")
@@ -210,12 +192,12 @@ def generate_trend_report(emerging_df: pd.DataFrame, growth_df: pd.DataFrame, to
     # Topics en déclin
     declining = growth_df[growth_df['growth_rate'].notna()].sort_values('growth_rate').head(top_n)
     if not declining.empty:
-        lines.append("\n🔻 TOPICS EN DÉCLIN")
+        lines.append("\n TOPICS EN DÉCLIN")
         for idx, row in declining.iterrows():
             lines.append(f"  • {row.name}: {row['growth_rate']*100:.1f}%")
 
     # Statistiques générales
-    lines.append(f"\n📊 STATISTIQUES")
+    lines.append(f"\n STATISTIQUES")
     lines.append(f"  • Topics analysés : {len(growth_df)}")
     lines.append(f"  • Croissance moyenne : {growth_df['growth_rate'].mean()*100:.1f}%")
     lines.append(f"  • Topics émergents : {emerging_df['is_emerging'].sum()}")
@@ -228,9 +210,9 @@ if __name__ == "__main__":
 
     try:
         ts = pd.read_parquet("data/processed/topic_timeseries.parquet")
-        print(f"✅ Série temporelle chargée : {ts.shape}")
+        print(f" Série temporelle chargée : {ts.shape}")
     except FileNotFoundError:
-        print("⚠️  Génération de données synthétiques...")
+        print("  Génération de données synthétiques...")
         dates = pd.date_range(start="2022-01-01", periods=24, freq="MS")
         n_topics = 20
         np.random.seed(42)
@@ -242,23 +224,23 @@ if __name__ == "__main__":
 
     # 1. Matrice des taux de croissance
     growth_df = compute_growth_matrix(ts, n=3)
-    print("\n📊 Taux de croissance :")
+    print("\n Taux de croissance :")
     print(growth_df.sort_values('growth_rate', ascending=False).head(10).to_string())
 
     # 2. Matrice des tendances
     trend_df = compute_trend_matrix(ts, n=3)
-    print("\n📊 Classification des tendances :")
+    print("\n Classification des tendances :")
     print(trend_df['trend'].value_counts().to_string())
 
     # 3. Détection des topics émergents
     emerging = detect_emerging_topics_advanced(ts, top_n=15, threshold_std=1.5)
-    print("\n🔺 TOPICS ÉMERGENTS :")
+    print("\n TOPICS ÉMERGENTS :")
     print(emerging[["topic_id", "emergence_score", "growth_rate", "momentum", "volatility"]].head(10).to_string())
 
     # 4. Identification leaders/suiveurs
     leadership = identify_leading_lagging(growth_df.reset_index().rename(columns={'index': 'topic_id'}))
-    print(f"\n🏆 Topics leaders : {len(leadership['leading'])}")
-    print(f"📉 Topics suiveurs : {len(leadership['lagging'])}")
+    print(f"\n Topics leaders : {len(leadership['leading'])}")
+    print(f" Topics suiveurs : {len(leadership['lagging'])}")
 
     # 5. Rapport
     report = generate_trend_report(emerging, growth_df)
@@ -269,4 +251,4 @@ if __name__ == "__main__":
     growth_df.to_parquet("data/processed/growth_rates.parquet")
     trend_df.to_parquet("data/processed/trend_classification.parquet")
 
-    print("\n✅ Détection des tendances terminée.")
+    print("\n Détection des tendances terminée.")

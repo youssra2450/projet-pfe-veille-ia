@@ -123,11 +123,11 @@ if __name__ == "__main__":
     ts = dyn.compute_topic_timeseries(df)
     classified = dyn.classify_topics(ts)
 
-    print("\n📊 Classification des topics :")
+    print("\n Classification des topics :")
     print(classified.to_string(index=False))
 
     dyn.save_timeseries(ts)
     classified.to_parquet(
         "data/processed/topics_classified.parquet",
         index=False)
-    print("✅ Dynamic topic modeling terminé.")
+    print(" Dynamic topic modeling terminé.")

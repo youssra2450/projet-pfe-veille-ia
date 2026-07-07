@@ -115,4 +115,4 @@ if __name__ == "__main__":
     model = LDAModel(n_topics=best_n).fit(texts)
     print(model.get_topic_summary_df())
     model.save()
-    print("✅ LDA terminé.")
+    print(" LDA terminé.")

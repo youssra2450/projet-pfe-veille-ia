@@ -27,9 +27,9 @@ scripts = [
 log_file = f"pipeline_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
 print("="*50)
-print("🚀 PIPELINE MULTI-AGENTS - VEILLE IA")
+print(" PIPELINE MULTI-AGENTS - VEILLE IA")
 print("="*50)
-print(f"📝 Logs sauvegardés dans : {log_file}\n")
+print(f" Logs sauvegardés dans : {log_file}\n")
 
 # Ouvrir le fichier de log
 with open(log_file, "w", encoding="utf-8") as log:
@@ -40,13 +40,13 @@ with open(log_file, "w", encoding="utf-8") as log:
     fail_count = 0
     
     for nom, script, working_dir in scripts:
-        print(f"🚀 {nom}...")
-        log.write(f"\n🚀 {nom} - {script}\n")
+        print(f" {nom}...")
+        log.write(f"\n {nom} - {script}\n")
         log.write("-"*30 + "\n")
         
         # Vérifier si le script existe
         if not os.path.exists(script):
-            msg = f"❌ Fichier introuvable : {script}"
+            msg = f" Fichier introuvable : {script}"
             print(msg)
             log.write(msg + "\n")
             fail_count += 1
@@ -73,29 +73,29 @@ with open(log_file, "w", encoding="utf-8") as log:
                 log.write(msg + "\n")
                 fail_count += 1
             else:
-                msg = f"✅ {nom} terminé avec succès"
+                msg = f" {nom} terminé avec succès"
                 print(msg)
                 log.write(msg + "\n")
                 success_count += 1
                 
         except subprocess.TimeoutExpired:
-            msg = f"❌ Timeout dans {nom} (> 1 heure)"
+            msg = f" Timeout dans {nom} (> 1 heure)"
             print(msg)
             log.write(msg + "\n")
             fail_count += 1
         except Exception as e:
-            msg = f"❌ Exception dans {nom} : {str(e)}"
+            msg = f" Exception dans {nom} : {str(e)}"
             print(msg)
             log.write(msg + "\n")
             fail_count += 1
     
     # Résumé final
     print("\n" + "="*50)
-    print("📊 RÉSUMÉ DE L'EXÉCUTION")
+    print(" RÉSUMÉ DE L'EXÉCUTION")
     print("="*50)
-    print(f"✅ Succès : {success_count}/{len(scripts)}")
-    print(f"❌ Échecs : {fail_count}/{len(scripts)}")
-    print(f"📁 Logs : {log_file}")
+    print(f" Succès : {success_count}/{len(scripts)}")
+    print(f" Échecs : {fail_count}/{len(scripts)}")
+    print(f" Logs : {log_file}")
     
     log.write("\n" + "="*50 + "\n")
     log.write(f"RÉSUMÉ : {success_count} succès, {fail_count} échecs\n")
@@ -103,13 +103,13 @@ with open(log_file, "w", encoding="utf-8") as log:
 
 print("\n" + "="*50)
 if fail_count == 0:
-    print("🎉 TOUS LES AGENTS ONT TERMINÉ AVEC SUCCÈS")
-    print("📊 Tu peux maintenant lancer le dashboard !")
+    print(" TOUS LES AGENTS ONT TERMINÉ AVEC SUCCÈS")
+    print(" Tu peux maintenant lancer le dashboard !")
 else:
-    print("⚠️ Certains agents ont échoué. Vérifie les logs.")
+    print(" Certains agents ont échoué. Vérifie les logs.")
 print("="*50)
 
 # Optionnel : lancer le dashboard
-open_dashboard = input("\n🚀 Lancer le dashboard Streamlit ? (o/n): ").lower()
+open_dashboard = input("\n Lancer le dashboard Streamlit ? (o/n): ").lower()
 if open_dashboard == 'o':
     subprocess.run([sys.executable, "-m", "streamlit", "run", "dashboard2.py"])
