@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-07-19T20:48:40.396352",
+  "report_file": "rapport_20260719_204840.md",
+  "data_summary": {
+    "total_articles": 14334,
+    "emerging_topics_count": 15,
+    "avg_growth": 115.46666666666667,
+    "max_growth": 189.0
+  },
+  "insights_count": {
+    "key_findings": 2,
+    "recommendations": 2,
+    "anomalies": 0
+  },
+  "confidence": {
+    "overall_score": 0.933,
+    "confidence_level": "Eleve",
+    "interpretation": "Analyse robuste basee sur 14,334 articles et 15 topics emergents. Les tendances sont fiables.",
+    "factors": {
+      "data_volume_score": 1.0,
+      "temporal_coverage_score": 1.0,
+      "topic_diversity_score": 0.8,
+      "growth_quality_score": 0.938,
+      "coherence_score": 0.9
+    },
+    "details": {
+      "n_articles": 14334,
+      "n_topics": 15,
+      "n_periods": 37,
+      "growth_std": 30.78
+    }
+  },
+  "validation": {
+    "is_complete": true,
+    "warnings": [],
+    "missing": []
+  }
+}

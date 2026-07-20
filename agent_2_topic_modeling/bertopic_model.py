@@ -40,13 +40,16 @@ class BERTopicModel:
             metric="cosine",
             random_state=SEED,
         )
+        
+    
         self.hdbscan_model = HDBSCAN(
             min_cluster_size=3,      
-            min_samples=2,           
+            min_samples=2,          
             cluster_selection_epsilon=0.05,  
             metric="euclidean",
             prediction_data=True,
         )
+        
         self.vectorizer_model = CountVectorizer(
             ngram_range=(1, 2),
             stop_words="english",
@@ -81,7 +84,7 @@ class BERTopicModel:
                 self.llm_representation = Llama2(
                     model=llm_model,
                     prompt=prompt,
-                    delay_in_seconds=1,  # Éviter la surcharge du serveur
+                    delay_in_seconds=1,
                 )
                 self.representation_models.append(self.llm_representation)
                 logger.info("LLM chargé avec succès")
@@ -102,7 +105,7 @@ class BERTopicModel:
         self.topics = None
         self.probs = None
         self.embeddings = None
-        self.topic_labels = {}  # Stocke les noms générés
+        self.topic_labels = {}
 
     def fit(self, texts: List[str], docs_metadata: Optional[pd.DataFrame] = None):
         """
@@ -153,7 +156,6 @@ class BERTopicModel:
             # 1. Essayer d'utiliser le LLM si disponible
             if self.use_llm_for_labels and self.llm_representation:
                 try:
-                    # Le LLM génère un nom directement
                     label = self._get_llm_label(topic_id, keywords)
                     if label and len(label) > 5:
                         self.topic_labels[topic_id] = label
@@ -172,13 +174,9 @@ class BERTopicModel:
         Utilise le LLM pour générer un nom de topic.
         """
         try:
-            # Le LLM est appelé via le modèle de représentation
-            # On récupère le nom depuis la représentation générée
             representation = self.topic_model.get_topic(topic_id, full=True)
             if representation and len(representation) > 0:
-                # Prendre la première proposition du LLM
                 label = representation[0][0] if isinstance(representation[0], tuple) else representation[0]
-                # Nettoyer le résultat
                 label = label.strip().strip('"\'')
                 return label
         except Exception as e:
@@ -188,23 +186,18 @@ class BERTopicModel:
     def _generate_label_from_keywords(self, keywords: str) -> str:
         """
         Génère un nom de topic à partir des mots-clés.
-        Utilise une approche heuristique.
         """
-        # Nettoyer les mots-clés
         words = [w.strip() for w in keywords.split(',')]
         words = [w for w in words if w and len(w) > 2]
         
         if not words:
             return "Topic non nommé"
         
-        # Prendre les mots les plus significatifs
-        # On privilégie les mots qui ont un sens fort en IA
         important_prefixes = ['learning', 'network', 'model', 'vision', 'language', 
                               'agent', 'quantum', 'optimization', 'neural', 'deep']
         
         selected = []
         for w in words[:5]:
-            # Vérifier si le mot est important
             if any(prefix in w.lower() for prefix in important_prefixes):
                 selected.append(w.capitalize())
             elif len(selected) < 2:
@@ -213,7 +206,6 @@ class BERTopicModel:
         if not selected:
             selected = [words[0].capitalize()] if words else ["Topic"]
         
-        # Créer le nom
         if len(selected) == 1:
             return f"{selected[0]} related"
         elif len(selected) == 2:
@@ -228,12 +220,10 @@ class BERTopicModel:
         info = self.topic_model.get_topic_info()
         info = info[info["Topic"] != -1].copy()
         
-        # Ajouter les noms générés
         info["topic_label"] = info["Topic"].map(
             lambda t: self.topic_labels.get(t, f"Topic {t}")
         )
         
-        # Ajouter les mots-clés
         info["top_words"] = info["Topic"].apply(
             lambda t: ", ".join(
                 [w for w, _ in self.topic_model.get_topic(t)[:10]])
@@ -250,7 +240,6 @@ class BERTopicModel:
     def set_custom_label(self, topic_id: int, label: str):
         """
         Permet de définir manuellement un nom pour un topic.
-        Utile pour la validation/expertise humaine.
         """
         self.topic_labels[topic_id] = label
         logger.info(f"Label personnalisé pour topic {topic_id}: {label}")
@@ -270,7 +259,6 @@ class BERTopicModel:
                 self.embeddings
             )
         
-        # Sauvegarder les labels
         label_path = Path(dir_path) / "topic_labels.json"
         import json
         with open(label_path, "w", encoding="utf-8") as f:
@@ -285,14 +273,12 @@ class BERTopicModel:
         instance.topic_model = BERTopic.load(
             str(Path(dir_path) / "bertopic_model"))
         
-        # Charger les embeddings
         emb_path = Path(dir_path) / "embeddings.npy"
         instance.embeddings = (
             np.load(str(emb_path))
             if emb_path.exists() else None
         )
         
-        # Charger les labels
         label_path = Path(dir_path) / "topic_labels.json"
         if label_path.exists():
             import json
@@ -316,7 +302,6 @@ if __name__ == "__main__":
     texts = df["clean_abstract"].dropna().tolist()
     print(f"Articles chargés : {len(texts)}")
 
-    # Modèle avec génération automatique de noms
     model = BERTopicModel(
         use_llm_for_labels=False,  
         use_keybert=True,          

@@ -5,8 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Aller dans le dossier du projet
-os.chdir(r"C:\Users\youss\OneDrive\Desktop\projet_PFE")
-
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Liste des scripts (chemins relatifs simples)
 scripts = [
     ("Agent 1 - Collecte", "arxiv_fetcher.py", "agent_1_collecte_nettoyage"),

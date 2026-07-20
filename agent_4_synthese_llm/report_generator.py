@@ -29,7 +29,7 @@ class Config:
         self.data_dir = self.root_dir / "data" / "expor"
         self.reports_dir = self.root_dir / "data" / "reports"
         self.reports_dir.mkdir(parents=True, exist_ok=True)
-        self.llm_model = "llama3.2"
+        self.llm_model = "Llama3.2"
 
 config = Config()
 

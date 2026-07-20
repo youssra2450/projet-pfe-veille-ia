@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import json
 from collections import Counter
 
-OUTPUT_DIR = Path("data/expo")
+OUTPUT_DIR = Path("data/expor")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ============================================

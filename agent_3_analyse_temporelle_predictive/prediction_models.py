@@ -1,3 +1,4 @@
+import argparse
 import logging
 import warnings
 from pathlib import Path
@@ -51,16 +52,16 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     mask = y_true != 0
     if not mask.any():
-        return {"mae": np.nan, "rmse": np.nan, "mape": np.nan, 
+        return {"mae": np.nan, "rmse": np.nan, "mape": np.nan,
                 "smape": np.nan, "mase": np.nan, "r2": np.nan}
-    
+
     y_true_m, y_pred_m = y_true[mask], y_pred[mask]
     mae = mean_absolute_error(y_true_m, y_pred_m)
     rmse = np.sqrt(mean_squared_error(y_true_m, y_pred_m))
     mape = np.mean(np.abs((y_true_m - y_pred_m) / y_true_m)) * 100
     denominator = (np.abs(y_true_m) + np.abs(y_pred_m)) / 2
     smape = np.mean(np.abs(y_true_m - y_pred_m) / denominator) * 100
-    
+
     if len(y_true_m) > 1:
         naive_error = np.mean(np.abs(np.diff(y_true_m)))
         mase = mae / naive_error if naive_error > 0 else np.nan
@@ -69,8 +70,8 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:
         r2 = 1 - (ss_res / ss_tot) if ss_tot > 0 else np.nan
     else:
         mase, r2 = np.nan, np.nan
-    
-    return {"mae": round(mae, 5), "rmse": round(rmse, 5), 
+
+    return {"mae": round(mae, 5), "rmse": round(rmse, 5),
             "mape": round(mape, 2), "smape": round(smape, 2),
             "mase": round(mase, 5) if not np.isnan(mase) else None,
             "r2": round(r2, 4) if not np.isnan(r2) else None}
@@ -223,7 +224,12 @@ class TrendPredictor:
             return None
 
         train_s, test_s = series.iloc[:-n_test], series.iloc[-n_test:]
+
+        # Sécurité : Prophet exige un index de dates sans doublons.
         df_train = pd.DataFrame({"ds": train_s.index, "y": train_s.values})
+        df_train = df_train.drop_duplicates(subset="ds").reset_index(drop=True)
+        if len(df_train) < 6:
+            return None
 
         import logging as _log
         _log.getLogger("prophet").setLevel(_log.WARNING)
@@ -233,10 +239,10 @@ class TrendPredictor:
             warnings.simplefilter("ignore")
             model = Prophet(yearly_seasonality=True, weekly_seasonality=False,
                             daily_seasonality=False, changepoint_prior_scale=0.05)
-            try:
-                model.add_seasonality(name='monthly', period=30.5, fourier_order=3)
-            except:
-                pass
+            # NOTE: la seasonality "monthly" custom a été retirée : elle entrait
+            # en conflit avec yearly_seasonality sur des séries courtes et
+            # provoquait "cannot reindex on an axis with duplicate labels"
+            # dans pd.crosstab (bug interne Prophet sur peu de points).
             model.fit(df_train)
 
         future_test = model.make_future_dataframe(periods=n_test, freq='MS', include_history=False)
@@ -293,7 +299,7 @@ class TrendPredictor:
                 methods.append('arima')
             if self.use_deep_learning:
                 methods.append('lstm')
-            
+
             if not methods:
                 logger.error("Aucun modèle disponible pour la prédiction")
                 return []
@@ -332,7 +338,12 @@ class TrendPredictor:
         return results
 
     def backtest(self, timeseries: pd.DataFrame, method: str = 'prophet') -> pd.DataFrame:
-        """Backtesting avec validation croisée temporelle."""
+        """Backtesting avec validation croisée temporelle.
+
+        Chaque échec (fold/topic) est capturé individuellement : une erreur
+        sur un topic ne doit jamais interrompre tout le backtest ni faire
+        perdre le travail déjà accompli en amont (predict_all + save_forecasts).
+        """
         results = []
         tscv = TimeSeriesSplit(n_splits=3)
 
@@ -345,18 +356,30 @@ class TrendPredictor:
         if method not in method_map:
             return pd.DataFrame()
 
-        for col in timeseries.columns:
+        from tqdm import tqdm
+        n_errors = 0
+
+        for col in tqdm(timeseries.columns, desc=f"Backtest {method}"):
             series = timeseries[col].fillna(0)
             for fold, (train_idx, test_idx) in enumerate(tscv.split(series)):
                 train = pd.Series(series.iloc[train_idx].values, index=series.index[train_idx])
                 test = pd.Series(series.iloc[test_idx].values, index=series.index[test_idx])
 
-                pred = method_map[method](train)
+                try:
+                    pred = method_map[method](train)
+                except Exception as e:
+                    n_errors += 1
+                    logger.debug(f"Backtest {method} {col} fold {fold}: {e}")
+                    continue
+
                 if pred:
                     common = test.index.intersection(pred['forecast'].index)
                     if len(common) > 0:
                         metrics = compute_metrics(test.loc[common].values, pred['forecast'].loc[common].values)
                         results.append({'topic_id': col, 'fold': fold, 'method': method, **metrics})
+
+        if n_errors:
+            logger.warning(f"Backtest {method}: {n_errors} folds ignorés suite à une erreur")
 
         return pd.DataFrame(results)
 
@@ -423,6 +446,17 @@ class TrendPredictor:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
+    parser = argparse.ArgumentParser(description="Prédiction de tendances par topic")
+    parser.add_argument("--quick-test", action="store_true",
+                        help="Limite le nombre de topics et désactive le backtest, pour valider rapidement le pipeline")
+    parser.add_argument("--n-topics", type=int, default=15,
+                        help="Nombre de topics à utiliser avec --quick-test (défaut: 15)")
+    parser.add_argument("--no-lstm", action="store_true",
+                        help="Désactive le LSTM (le plus lent des 3 modèles)")
+    parser.add_argument("--no-backtest", action="store_true",
+                        help="Désactive le backtest, quel que soit le mode")
+    args = parser.parse_args()
+
     try:
         ts = pd.read_parquet("data/processed/topic_timeseries.parquet")
         print(f" Chargé : {len(ts)} périodes × {len(ts.columns)} topics")
@@ -434,8 +468,14 @@ if __name__ == "__main__":
         data = np.random.dirichlet(np.ones(n_topics), size=24).T
         ts = pd.DataFrame(data, columns=[f"topic_{i}" for i in range(n_topics)], index=dates)
 
-    predictor = TrendPredictor(horizon_months=6, use_deep_learning=True, use_ensemble=True)
-    
+    if args.quick_test:
+        ts = ts.iloc[:, :args.n_topics]
+        print(f" Mode quick-test : limité à {len(ts.columns)} topics, backtest désactivé")
+
+    predictor = TrendPredictor(horizon_months=6,
+                                use_deep_learning=not args.no_lstm,
+                                use_ensemble=True)
+
     # Méthodes disponibles automatiquement détectées
     methods = []
     if PROPHET_AVAILABLE:
@@ -444,7 +484,6 @@ if __name__ == "__main__":
         methods.append('arima')
     if predictor.use_deep_learning:
         methods.append('lstm')
-
     if not methods:
         print("  Aucun modèle disponible. Installez prophet, pmdarima ou tensorflow.")
     else:
@@ -458,15 +497,25 @@ if __name__ == "__main__":
                 'mae': ['mean', 'std'], 'rmse': ['mean', 'std'], 'r2': ['mean', 'std']
             }).round(4))
 
-            if PROPHET_AVAILABLE or PMDARIMA_AVAILABLE:
+            # IMPORTANT : on sauvegarde AVANT le backtest, pour ne jamais
+            # perdre le calcul principal si le backtest échoue.
+            output = predictor.save_forecasts(forecasts)
+            print(f"\n Sauvegardé : {output}")
+
+            run_backtest = (PROPHET_AVAILABLE or PMDARIMA_AVAILABLE) and not args.quick_test and not args.no_backtest
+            if run_backtest:
                 print("\n🔬 Backtesting:")
                 for method in ['prophet', 'arima']:
                     if method in methods:
-                        bt = predictor.backtest(ts, method=method)
-                        if not bt.empty:
-                            print(f"  {method.upper()}: MAE={bt['mae'].mean():.4f} (±{bt['mae'].std():.4f})")
-
-            output = predictor.save_forecasts(forecasts)
-            print(f"\n Sauvegardé : {output}")
+                        try:
+                            bt = predictor.backtest(ts, method=method)
+                            if not bt.empty:
+                                print(f"  {method.upper()}: MAE={bt['mae'].mean():.4f} (±{bt['mae'].std():.4f})")
+                            else:
+                                print(f"  {method.upper()}: aucun résultat de backtest exploitable")
+                        except Exception as e:
+                            print(f"  Backtest {method} échoué : {e}")
+            elif not run_backtest:
+                print("\n(Backtest ignoré)")
         else:
             print("  Aucune prédiction générée.")
